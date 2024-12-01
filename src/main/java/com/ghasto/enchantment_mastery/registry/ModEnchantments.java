@@ -1,6 +1,7 @@
 package com.ghasto.enchantment_mastery.registry;
 
 import com.ghasto.enchantment_mastery.EnchantmentMastery;
+import com.ghasto.enchantment_mastery.datagen.ModTags;
 import com.ghasto.enchantment_mastery.enchantment.AquaphobiaCurseEnchantmentEffect;
 import com.ghasto.enchantment_mastery.enchantment.IceAspectEnchantmentEffect;
 import com.ghasto.enchantment_mastery.enchantment.TrueShotEnchantmentEffect;
@@ -18,16 +19,14 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Items;
 import net.minecraft.loot.condition.DamageSourcePropertiesLootCondition;
 import net.minecraft.loot.condition.EntityPropertiesLootCondition;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.predicate.TagPredicate;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.registry.*;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.registry.tag.EnchantmentTags;
-import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.event.GameEvent;
@@ -53,6 +52,9 @@ public class ModEnchantments {
 
     /* Bow Enchantments */
     public static final RegistryKey<Enchantment> TRUE_SHOT = REGISTRY.key("true_shot", RegistryKeys.ENCHANTMENT);
+
+    /* Tool Enchantments */
+    public static final RegistryKey<Enchantment> FOSSIL_FORTUNE = REGISTRY.key("fossil_fortune", RegistryKeys.ENCHANTMENT);
 
     /* Curses */
     public static final RegistryKey<Enchantment> CURSE_OF_BUTTERFINGERS = REGISTRY.key("curse_of_butterfingers", RegistryKeys.ENCHANTMENT);
@@ -137,7 +139,7 @@ public class ModEnchantments {
                 Enchantment.leveledCost(25, 10), // Max cost: 25, increase per level: 10
                 4, // Rarity weight
                 new AttributeModifierSlot[]{AttributeModifierSlot.MAINHAND} // Applicable slot
-        )).addEffect(EnchantmentEffectComponentTypes.ATTRIBUTES, new AttributeEnchantmentEffect(Identifier.of(EnchantmentMastery.MOD_ID, "swift_attack"), EntityAttributes.ATTACK_SPEED, new EnchantmentLevelBasedValue.LevelsSquared(1F), EntityAttributeModifier.Operation.ADD_VALUE)));
+        )).addEffect(EnchantmentEffectComponentTypes.ATTRIBUTES, new AttributeEnchantmentEffect(Identifier.of(EnchantmentMastery.MOD_ID, "swift_attack"), EntityAttributes.GENERIC_ATTACK_SPEED, new EnchantmentLevelBasedValue.LevelsSquared(1F), EntityAttributeModifier.Operation.ADD_VALUE)));
 
         REGISTRY.enchantment(registerable, HIGH_HEELS, Enchantment.builder(Enchantment.definition(
                 items.getOrThrow(ItemTags.FOOT_ARMOR_ENCHANTABLE),
@@ -151,7 +153,7 @@ public class ModEnchantments {
                 EnchantmentEffectComponentTypes.ATTRIBUTES,
                 new AttributeEnchantmentEffect(
                         Identifier.of(EnchantmentMastery.MOD_ID, "high_heels"), // Identifier for the effect
-                        EntityAttributes.STEP_HEIGHT, // Targeted attribute (step height)
+                        EntityAttributes.GENERIC_STEP_HEIGHT, // Targeted attribute (step height)
                         EnchantmentLevelBasedValue.constant(0.4f), // Fixed value of 1f for the attribute,
                         EntityAttributeModifier.Operation.ADD_VALUE
                 )
@@ -205,5 +207,20 @@ public class ModEnchantments {
                 new AttributeModifierSlot[]{AttributeModifierSlot.ARMOR} // Applicable slot
         )).addEffect(EnchantmentEffectComponentTypes.TICK, new AquaphobiaCurseEnchantmentEffect())
         );
+
+        REGISTRY.enchantment(registerable, FOSSIL_FORTUNE, Enchantment.builder(Enchantment.definition(
+                items.getOrThrow(ModTags.BRUSH_ENCHANTABLE),
+                2,
+                2, // Maximum enchantment level
+                Enchantment.leveledCost(10, 10), // Min cost: 10, increase per level: 10
+                Enchantment.leveledCost(25, 10), // Max cost: 25, increase per level: 10
+                4, // Rarity weight
+                new AttributeModifierSlot[]{AttributeModifierSlot.MAINHAND} // Applicable slot
+        )).addEffect(
+                EnchantmentEffectComponentTypes.POST_ATTACK,
+                EnchantmentEffectTarget.ATTACKER,
+                EnchantmentEffectTarget.VICTIM,
+                new IceAspectEnchantmentEffect()
+        ));
     }
 }
