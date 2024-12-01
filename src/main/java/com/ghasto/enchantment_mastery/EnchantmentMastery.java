@@ -36,28 +36,6 @@ public class EnchantmentMastery implements ModInitializer, DataGeneratorEntrypoi
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	public static final RegistryKey<ItemGroup> ITEM_GROUP = REGISTRY.itemGroup("item_group",
-			FabricItemGroup.builder()
-					.displayName(Text.translatable("itemGroup." + EnchantmentMastery.MOD_ID))
-					.icon(() -> Items.ENCHANTED_BOOK.getDefaultStack())
-					.entries((displayContext, entries) -> {
-						entries.add(book(ModEnchantments.STONE_MENDING, 1));
-						entries.add(book(ModEnchantments.STONE_MENDING, 2));
-
-						entries.add(book(ModEnchantments.BLAZE_WALKER, 1));
-						entries.add(book(ModEnchantments.BLAZE_WALKER, 2));
-
-						entries.add(book(ModEnchantments.HIGH_HEELS, 1));
-
-						entries.add(book(ModEnchantments.ICE_ASPECT, 1));
-						entries.add(book(ModEnchantments.ICE_ASPECT, 2));
-
-						entries.add(book(ModEnchantments.SWIFT_ATTACK, 1));
-						entries.add(book(ModEnchantments.SWIFT_ATTACK, 2));
-
-						entries.add(book(ModEnchantments.TRUE_SHOT, 1));
-					}).build()
-	);
 
 	@Override
 	public void onInitialize() {
@@ -71,13 +49,6 @@ public class EnchantmentMastery implements ModInitializer, DataGeneratorEntrypoi
 
 		StoneMendingEnchantmentHandler.register();
 		ButterfingersCurseEnchantmentHandler.register();
-	}
-
-	private static ItemStack book(RegistryKey<Enchantment> key, int level) {
-		World world = MinecraftClient.getInstance().world;
-		ItemStack stack = new ItemStack(Items.ENCHANTED_BOOK);
-		stack.addEnchantment(SimpleRegistry.getEnchantment(key, world), level);
-		return stack;
 	}
 
 	@Override
