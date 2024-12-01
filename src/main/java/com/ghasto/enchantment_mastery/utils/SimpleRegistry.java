@@ -16,6 +16,7 @@ import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.item.*;
 import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
@@ -35,20 +36,20 @@ public class SimpleRegistry {
 
     /* Item Registry Helpers */
     public <T extends Item> T item(String name, Function<Item.Settings, T> factory) {
-        T item = Registry.register(Registries.ITEM, asID(name), factory.apply(new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, asID(name)))));
+        T item = Registry.register(Registries.ITEM, asID(name), factory.apply(new Item.Settings()));
         return item;
     }
 
 
     /* Block Registry Helpers */
     public <T extends Block, I extends BlockItem> T block(String name, Function<AbstractBlock.Settings, T> factory, BiFunction<Block, Item.Settings, I> itemFactory) {
-        T block = Registry.register(Registries.BLOCK, asID(name), factory.apply(AbstractBlock.Settings.create().registryKey(RegistryKey.of(RegistryKeys.BLOCK, asID(name)))));
-        I item = Registry.register(Registries.ITEM, asID(name), itemFactory.apply(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, asID(name)))));
+        T block = Registry.register(Registries.BLOCK, asID(name), factory.apply(AbstractBlock.Settings.create()));
+        I item = Registry.register(Registries.ITEM, asID(name), itemFactory.apply(block, new Item.Settings()));
         return block;
     }
 
     public <T extends Block> T block(String name, Function<AbstractBlock.Settings, T> factory) {
-        return Registry.register(Registries.BLOCK, asID(name), factory.apply(AbstractBlock.Settings.create().registryKey(RegistryKey.of(RegistryKeys.BLOCK, asID(name)))));
+        return Registry.register(Registries.BLOCK, asID(name), factory.apply(AbstractBlock.Settings.create()));
     }
 
     /* Block Entity Registry Helpers */
@@ -74,13 +75,15 @@ public class SimpleRegistry {
     }
 
     public static RegistryEntry<Enchantment> getEnchantment(RegistryKey<Enchantment> enchantment, World world) {
-        return world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(enchantment);
+        return world.getRegistryManager().getOptional(RegistryKeys.ENCHANTMENT).orElseThrow().entryOf(enchantment);
     }
 
     /* Data Components */
     public <T>ComponentType<T> enchantmentComponent(String name, UnaryOperator<ComponentType.Builder<T>> builderOperator) {
         return Registry.register(Registries.ENCHANTMENT_EFFECT_COMPONENT_TYPE, asID(name), builderOperator.apply(ComponentType.builder()).build());
     }
+
+
 
 
 

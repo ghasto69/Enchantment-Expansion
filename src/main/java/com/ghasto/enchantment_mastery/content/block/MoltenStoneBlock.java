@@ -60,7 +60,7 @@ public class MoltenStoneBlock extends Block {
         }
 
         // Apply damage
-        livingEntity.serverDamage(world.getDamageSources().hotFloor(), 1.5F);
+        livingEntity.damage(world.getDamageSources().hotFloor(), 1.5F);
         super.onSteppedOn(world, pos, state, entity);
     }
 
